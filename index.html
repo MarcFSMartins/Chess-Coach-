@@ -8,22 +8,41 @@
       font-family: Arial, sans-serif;
       text-align: center;
     }
-    iframe {
-      width: 350px;
-      height: 420px;
-      border: none;
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(8, 40px);
+      grid-template-rows: repeat(8, 40px);
+      width: 320px;
+      margin: 20px auto;
+      border: 2px solid #333;
+    }
+
+    .square {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      cursor: pointer;
+    }
+
+    .white { background: #f0d9b5; }
+    .black { background: #b58863; }
+
+    .selected {
+      outline: 3px solid red;
     }
   </style>
 </head>
+
 <body>
-
   <h1>Play Coach</h1>
-  <p>Jogue a partida abaixo</p>
+  <p id="status">Clique em uma peça para mover</p>
 
-  <iframe
-    src="https://lichess.org/embed/analysis/standard"
-    allowfullscreen
-  ></iframe>
+  <div id="board"></div>
 
+  <script src="app.js"></script>
 </body>
 </html>
