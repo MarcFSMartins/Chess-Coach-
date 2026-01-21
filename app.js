@@ -8,7 +8,7 @@ const pieces = {
   R: "♖", N: "♘", B: "♗", Q: "♕", K: "♔", P: "♙"
 };
 
-let board = [
+const initialBoard = [
   "rnbqkbnr",
   "pppppppp",
   "........",
@@ -19,6 +19,8 @@ let board = [
   "RNBQKBNR"
 ];
 
+let board = JSON.parse(JSON.stringify(initialBoard));
+
 function render() {
   boardEl.innerHTML = "";
   for (let r = 0; r < 8; r++) {
@@ -27,16 +29,16 @@ function render() {
       sq.className = "square " + ((r + c) % 2 ? "black" : "white");
       const piece = board[r][c];
       if (piece !== ".") sq.textContent = pieces[piece];
-      sq.dataset.pos = `${r},${c}`;
-      sq.onclick = () => clickSquare(r, c, sq);
+      sq.onclick = () => onSquareClick(r, c, sq);
       boardEl.appendChild(sq);
     }
   }
 }
 
-function clickSquare(r, c, el) {
+function onSquareClick(r, c, el) {
   if (selected) {
     const [sr, sc] = selected;
+
     board[r] =
       board[r].substring(0, c) +
       board[sr][sc] +
@@ -48,13 +50,20 @@ function clickSquare(r, c, el) {
       board[sr].substring(sc + 1);
 
     selected = null;
-    statusEl.innerText = "Lance feito";
+    statusEl.innerText = "Lance executado";
     render();
   } else if (board[r][c] !== ".") {
     selected = [r, c];
+    statusEl.innerText = "Escolha o destino";
     el.classList.add("selected");
-    statusEl.innerText = "Escolha a casa de destino";
   }
+}
+
+function resetGame() {
+  board = JSON.parse(JSON.stringify(initialBoard));
+  selected = null;
+  statusEl.innerText = "Partida reiniciada";
+  render();
 }
 
 render();
