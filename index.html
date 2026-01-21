@@ -1,47 +1,123 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Play Coach</title>
+
+  <!-- Fonte Material -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
     body {
-      font-family: Arial, sans-serif;
+      margin: 0;
+      font-family: Roboto, sans-serif;
+      background: #121212;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 420px;
+      padding: 16px;
+    }
+
+    .card {
+      background: #1e1e1e;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.4);
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0 0 8px;
+      font-weight: 500;
       text-align: center;
+    }
+
+    #status {
+      text-align: center;
+      font-size: 14px;
+      color: #bbb;
+      margin-bottom: 12px;
     }
 
     #board {
       display: grid;
-      grid-template-columns: repeat(8, 40px);
-      grid-template-rows: repeat(8, 40px);
-      width: 320px;
-      margin: 20px auto;
-      border: 2px solid #333;
+      grid-template-columns: repeat(8, 1fr);
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
     }
 
     .square {
-      width: 40px;
-      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
-      cursor: pointer;
+      font-size: 6vw;
+      user-select: none;
+    }
+
+    @media (min-width: 420px) {
+      .square {
+        font-size: 26px;
+      }
     }
 
     .white { background: #f0d9b5; }
     .black { background: #b58863; }
 
     .selected {
-      outline: 3px solid red;
+      box-shadow: inset 0 0 0 3px #03dac6;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    button {
+      flex: 1;
+      height: 44px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #03dac6;
+      color: #000;
+    }
+
+    .secondary {
+      background: #333;
+      color: #fff;
     }
   </style>
 </head>
 
 <body>
-  <h1>Play Coach</h1>
-  <p id="status">Clique em uma peça para mover</p>
+  <div class="app">
+    <div class="card">
+      <h1>Play Coach</h1>
+      <p id="status">Toque em uma peça</p>
 
-  <div id="board"></div>
+      <div id="board"></div>
+
+      <div class="actions">
+        <button class="secondary" onclick="resetGame()">Reiniciar</button>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
