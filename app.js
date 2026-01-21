@@ -4,7 +4,7 @@ const boardEl = document.getElementById("board");
 const statusEl = document.getElementById("status");
 
 /* ================== ESTADO ================== */
-
+let legalMoves = [];
 let selected = null;
 let turn = "white";
 
