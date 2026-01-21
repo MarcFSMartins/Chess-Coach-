@@ -1,55 +1,60 @@
-const game = new Chess();
+const boardEl = document.getElementById("board");
+const statusEl = document.getElementById("status");
 
-const boardElement = document.getElementById("board");
+let selected = null;
 
-const ground = Chessground(boardElement, {
-  orientation: "white",
-  movable: {
-    free: false,
-    color: "white",
-    dests: getDests()
-  }
-});
+const pieces = {
+  r: "♜", n: "♞", b: "♝", q: "♛", k: "♚", p: "♟",
+  R: "♖", N: "♘", B: "♗", Q: "♕", K: "♔", P: "♙"
+};
 
-function getDests() {
-  const dests = new Map();
-  game.SQUARES.forEach(s => {
-    const moves = game.moves({ square: s, verbose: true });
-    if (moves.length) {
-      dests.set(
-        s,
-        moves.map(m => m.to)
-      );
+let board = [
+  "rnbqkbnr",
+  "pppppppp",
+  "........",
+  "........",
+  "........",
+  "........",
+  "PPPPPPPP",
+  "RNBQKBNR"
+];
+
+function render() {
+  boardEl.innerHTML = "";
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const sq = document.createElement("div");
+      sq.className = "square " + ((r + c) % 2 ? "black" : "white");
+      const piece = board[r][c];
+      if (piece !== ".") sq.textContent = pieces[piece];
+      sq.dataset.pos = `${r},${c}`;
+      sq.onclick = () => clickSquare(r, c, sq);
+      boardEl.appendChild(sq);
     }
-  });
-  return dests;
+  }
 }
 
-ground.set({
-  movable: {
-    dests: getDests(),
-    events: {
-      after: onMove
-    }
+function clickSquare(r, c, el) {
+  if (selected) {
+    const [sr, sc] = selected;
+    board[r] =
+      board[r].substring(0, c) +
+      board[sr][sc] +
+      board[r].substring(c + 1);
+
+    board[sr] =
+      board[sr].substring(0, sc) +
+      "." +
+      board[sr].substring(sc + 1);
+
+    selected = null;
+    statusEl.innerText = "Lance feito";
+    render();
+  } else if (board[r][c] !== ".") {
+    selected = [r, c];
+    el.classList.add("selected");
+    statusEl.innerText = "Escolha a casa de destino";
   }
-});
-
-function onMove(from, to) {
-  const move = game.move({
-    from,
-    to,
-    promotion: "q"
-  });
-
-  if (!move) return;
-
-  document.getElementById("status").innerText =
-    "Você jogou: " + move.san;
-
-  ground.set({
-    fen: game.fen(),
-    movable: {
-      dests: getDests()
-    }
-  });
 }
+
+render();
