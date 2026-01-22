@@ -4,6 +4,9 @@ const boardEl = document.getElementById("board");
 const statusEl = document.getElementById("status");
 
 /* ================== ESTADO ================== */
+
+let moveHistory = [];
+let moveCount = 1;
 let legalMoves = [];
 let selected = null;
 let turn = "white";
@@ -66,6 +69,7 @@ if (
 
 function onSquareClick(r, c) {
   const piece = board[r][c];
+  const prevBoard = structuredClone(board);
 
   // destino
   if (selected) {
@@ -77,7 +81,23 @@ function onSquareClick(r, c) {
       movePiece(sr, sc, r, c);
       turn = turn === "white" ? "black" : "white";
     }
+    
+  const feedback = evaluateMove(prevBoard, board, {
+    piece: board[r][c],
+    from: [sr, sc],
+    to: [r, c],
+    captured: prevBoard[r][c] !== "." ? prevBoard[r][c] : null,
+    moveNumber: moveCount,
+    timesMoved: countPieceMoves(sr, sc)
+});
 
+statusEl.innerText =
+  `${feedback.label}: ${feedback.messages.join(", ")}`;
+
+moveCount++;
+
+
+    
     selected = null;
     legalMoves = [];
     render();
@@ -127,6 +147,15 @@ function getLegalMoves(sr, sc) {
   }
   return moves;
 }
+
+function countPieceMoves(r, c) {
+  return moveHistory.filter(m =>
+    m.from[0] === r && m.from[1] === c
+  ).length + 1;
+}
+
+moveHistory.push({ from: [sr, sc], to: [r, c] });
+
 
 /* ================== RESET ================== */
 
