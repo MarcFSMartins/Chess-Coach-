@@ -1,7 +1,6 @@
 function onSquareClick(square) {
-  clearHighlights();
+  const piece = chess.get(square);
 
-  // clique em destino
   if (selectedSquare) {
     const move = chess.move({
       from: selectedSquare,
@@ -9,39 +8,24 @@ function onSquareClick(square) {
       promotion: "q"
     });
 
-    selectedSquare = null;
-
     if (move) {
+      selectedSquare = null;
+      clearHighlights();
       drawBoard();
     }
 
     return;
   }
 
-  const piece = chess.get(square);
-  if (!piece) return;
+  if (!piece || piece.color !== chess.turn()) return;
 
   selectedSquare = square;
-  document
-    .querySelector(`[data-square="${square}"]`)
-    .classList.add("selected");
+  clearHighlights();
 
-  const moves = chess.moves({
-    square,
-    verbose: true
-  });
+  getSquareEl(square)?.classList.add("selected");
 
-  moves.forEach(m => {
-    const el = document.querySelector(
-      `[data-square="${m.to}"]`
-    );
-    if (el) el.classList.add("valid");
-  });
-}
-
-function clearHighlights() {
-  document.querySelectorAll(".selected")
-    .forEach(e => e.classList.remove("selected"));
-  document.querySelectorAll(".valid")
-    .forEach(e => e.classList.remove("valid"));
+  chess.moves({ square, verbose: true })
+    .forEach(m => {
+      getSquareEl(m.to)?.classList.add("valid");
+    });
 }
